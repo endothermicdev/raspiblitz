@@ -9,8 +9,8 @@
 # setup fresh SD card with image above - login per SSH and run this script:
 ##########################################################################
 
-defaultRepo="rootzoll"
-defaultBranch="v1.8"
+defaultRepo="endothermicdev"
+defaultBranch="v1.9"
 
 me="${0##/*}"
 

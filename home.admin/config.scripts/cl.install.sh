@@ -2,7 +2,7 @@
 # https://lightning.readthedocs.io/
 
 # https://github.com/ElementsProject/lightning/releases
-CLVERSION=v0.11.2
+CLVERSION=v22.11rc3
 
 # install the latest master by using the last commit id
 # https://github.com/ElementsProject/lightning/commit/master
@@ -47,6 +47,7 @@ function installDependencies()
   # mrkd and mistune needs to be globally available for the build
   sudo pip3 install mrkd==0.2.0
   sudo pip3 install mistune==0.8.4
+  sudo pip3 install mako
   # poetry
   sudo -u bitcoin pip3 install --user poetry
   if ! grep -Eq '^PATH="$HOME/.local/bin:$PATH"' /mnt/hdd/raspiblitz.conf; then
@@ -60,11 +61,11 @@ function buildAndInstallCLbinaries()
 {
   echo "- Configuring EXPERIMENTAL_FEATURES enabled"
   echo
-  sudo -u bitcoin ./configure --enable-experimental-features
+  sudo -u bitcoin /home/bitcoin/.local/bin/poetry run ./configure --enable-developer --enable-experimental-features
   echo
   echo "- Building Core lightning from source"
   echo
-  sudo -u bitcoin make
+  sudo -u bitcoin /home/bitcoin/.local/bin/poetry run make -j2
   echo
   echo "- Install to /usr/local/bin/"
   sudo make install || exit 1
@@ -152,8 +153,8 @@ if [ "$1" = "install" ]; then
   echo "- Reset to version $CLVERSION"
   sudo -u bitcoin git reset --hard $CLVERSION
 
-  sudo -u bitcoin /home/admin/config.scripts/blitz.git-verify.sh \
-   "${PGPsigner}" "${PGPpubkeyLink}" "${PGPpubkeyFingerprint}" "${CLVERSION}" || exit 1
+#  sudo -u bitcoin /home/admin/config.scripts/blitz.git-verify.sh \
+#   "${PGPsigner}" "${PGPpubkeyLink}" "${PGPpubkeyFingerprint}" "${CLVERSION}" || exit 1
 
   installDependencies
 
